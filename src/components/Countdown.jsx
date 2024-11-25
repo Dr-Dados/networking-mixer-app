@@ -1,10 +1,15 @@
 
-const Countdown = ({ timeRemaining }) => (
-  <div className="text-4xl font-bold text-red-600 mt-6">
-    Next Group Change in:{" "}
-    {String(Math.floor(timeRemaining / 60)).padStart(2, "0")}:
-    {String(timeRemaining % 60).padStart(2, "0")}
-  </div>
-);
+const Countdown = ({ timer }) => {
+  return (
+    <div className="text-center">
+      <div className="inline-block bg-gradient-to-r from-red-500 to-orange-400 text-white text-3xl font-bold rounded-full px-8 py-4 shadow-lg">
+        Next Group Change In: {timer}
+      </div>
+      <p className="text-sm text-gray-500 mt-2">
+        Groups will automatically refresh every {timer}.
+      </p>
+    </div>
+  );
+};
 
 export default Countdown;

@@ -26,9 +26,9 @@ const Controls = ({
       />
     </div>
     <div className="w-1/4">
-      <label>Change Groups Every (mm:ss)</label>
+      <label>Change Groups Every (minutes)</label>
       <input
-        type="text"
+        type="time"
         value={timerInput}
         onChange={(e) => setTimerInput(e.target.value)}
         className="border p-2 rounded-lg w-full mt-2"
