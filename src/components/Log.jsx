@@ -1,5 +1,4 @@
 const Log = ({ logEntries }) => {
-  console.log(logEntries);
   return (
     <div className="bg-white p-6 mt-6 shadow-lg rounded-lg">
       <h2 className="text-lg font-bold text-gray-700 mb-4">Log Entries</h2>
@@ -39,29 +38,35 @@ const Log = ({ logEntries }) => {
                 key={idx}
                 className="hover:bg-gray-100 transition-colors duration-150"
               >
-                <td className="px-6 py-4 text-sm text-gray-700">
-                  {entry.time}
-                </td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-800">
-                  Group {idx + 1}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-700">
-                  {entry.members.map((member, memberIdx) => (
-                    <span
-                      key={memberIdx}
-                      className={`inline-block px-2 py-1 text-xs font-medium rounded-lg ${
-                        member.role === "student"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-blue-100 text-blue-800"
-                      } mr-1`}
-                    >
-                      {member.name}
-                    </span>
-                  ))}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-700">
-                  {entry.timer}
-                </td>
+                {logEntries.length <= 0 ? (
+                  <td>No logs to show</td>
+                ) : (
+                  <>
+                    <td className="px-6 py-4 text-sm text-gray-700">
+                      {entry.time}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-800">
+                      Group {idx + 1}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-700">
+                      {entry.members.map((member, memberIdx) => (
+                        <span
+                          key={memberIdx}
+                          className={`inline-block px-2 py-1 text-xs font-medium rounded-lg ${
+                            member.role === "student"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-blue-100 text-blue-800"
+                          } mr-1`}
+                        >
+                          {member.name}
+                        </span>
+                      ))}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-700">
+                      {entry.timer}
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>

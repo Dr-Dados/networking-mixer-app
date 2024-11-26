@@ -1,5 +1,4 @@
-const LogsControls = ({ clearLogs }) => {
-  console.log(clearLogs);
+const LogsControls = ({ clearLogs, showLogsHandler }) => {
   return (
     <div className="flex flex-wrap justify-center gap-4">
       <button className="bg-blue-400 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-500 transition">
@@ -11,7 +10,10 @@ const LogsControls = ({ clearLogs }) => {
       >
         Clear Log
       </button>
-      <button className="bg-red-400 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-500 transition">
+      <button
+        onClick={showLogsHandler}
+        className="bg-red-400 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-500 transition"
+      >
         Show Log
       </button>
     </div>

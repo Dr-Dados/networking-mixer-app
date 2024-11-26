@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
-const Countdown = ({ initialTimer, constantTimer }) => {
+const Countdown = ({ initialTimer, constantTimer, isTimerRunning }) => {
   const [timer, setTimer] = useState(initialTimer);
-  const [isPaused, setIsPaused] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Convert mm:ss to total seconds
   const convertToSeconds = (timeString) => {
@@ -24,7 +24,7 @@ const Countdown = ({ initialTimer, constantTimer }) => {
     let totalSeconds = convertToSeconds(timer);
 
     const interval = setInterval(() => {
-      if (!isPaused) {
+      if (isTimerRunning && !isPaused) {
         totalSeconds -= 1;
         if (totalSeconds <= 0) {
           totalSeconds = convertToSeconds(constantTimer); // Reset when timer reaches 0
@@ -34,7 +34,12 @@ const Countdown = ({ initialTimer, constantTimer }) => {
     }, 1000);
 
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [constantTimer, isPaused, timer]);
+  }, [constantTimer, isPaused, isTimerRunning, timer]);
+
+  // Sync with external initialTimer changes
+  useEffect(() => {
+    setTimer(initialTimer);
+  }, [initialTimer]);
 
   // Handle Reset
   const handleReset = () => {

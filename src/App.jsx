@@ -19,10 +19,15 @@ export default function App() {
   const [professionals, setProfessionals] = useState([]);
   const [students, setStudents] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [showLogs, setShowLogs] = useState(false);
 
   const clearLogs = () => {
     setGroups([]);
     alert("Logs cleared successfully");
+  };
+
+  const showLogsHandler = () => {
+    setShowLogs(!showLogs);
   };
   const generateGroups = () => {
     if (typeof groupSize !== "number" || groupSize <= 0) {
@@ -30,17 +35,11 @@ export default function App() {
       return;
     }
 
-    const shuffledPros = generateArrayWithRole(
-      shuffleArray(professionals),
-      "professional"
-    );
-    const shuffledStudents = generateArrayWithRole(
-      shuffleArray(students),
-      "student"
-    );
+    const prosArray = generateArrayWithRole(professionals, "professional");
+    const studentsArray = generateArrayWithRole(students, "student");
 
-    const allParticipants = [...shuffledPros, ...shuffledStudents];
-    console.log("allParticipants", allParticipants);
+    const allParticipants = shuffleArray([...prosArray, ...studentsArray]);
+
     if (allParticipants.length === 0) {
       console.error("No participants available for grouping");
       return;
@@ -50,7 +49,7 @@ export default function App() {
     console.log("groupSize", groupSize);
 
     const dividedGroups = divideArray(allParticipants, groupSize);
-    const groups = dividedGroups.map((group, index) => {
+    const newGroups = dividedGroups.map((group, index) => {
       const groupData = {
         id: "Group" + (index + 1),
         members: group,
@@ -58,7 +57,7 @@ export default function App() {
       };
       return groupData;
     });
-    setGroups(groups);
+    setGroups((prevGroups) => [...prevGroups, ...newGroups]);
   };
 
   const handleStartNetworking = () => {
@@ -74,7 +73,6 @@ export default function App() {
       {/* Main Card */}
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 space-y-12">
         {/* Timer Section */}
-        <Countdown initialTimer="01:30" constantTimer="01:30" />
 
         {/* Input Section */}
 
@@ -100,10 +98,15 @@ export default function App() {
             Start Networking
           </button>
         </div>
+        <Countdown
+          isTimerRunning={isTimerRunning}
+          initialTimer="01:30"
+          constantTimer="01:30"
+        />
         {/* Action Buttons Section */}
-        <LogsControls clearLogs={clearLogs} />
+        <LogsControls clearLogs={clearLogs} showLogsHandler={showLogsHandler} />
         {/* Show log section */}
-        {groups.length > 0 && <Log logEntries={groups} />}
+        {showLogs && <Log logEntries={groups} />}
       </div>
     </div>
   );
