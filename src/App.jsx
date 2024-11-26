@@ -10,16 +10,21 @@ import {
 } from "./helpers/helpers";
 import Log from "./components/Log";
 import LogsControls from "./components/LogsControls";
+import NetworkingControls from "./components/NetworkingControls";
+import GroupsDisplay from "./components/GroupsDisplay";
 
 export default function App() {
   const [groupSize, setGroupSize] = useState(5);
   const [maxStudents, setMaxStudents] = useState(2);
   const [timer, setTimer] = useState("10:00");
+  const [constantTimer, setConstantTimer] = useState("10:00");
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [professionals, setProfessionals] = useState([]);
   const [students, setStudents] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [newGroups, setNewGroups] = useState([]);
   const [showLogs, setShowLogs] = useState(false);
+  console.log(constantTimer, timer);
 
   const clearLogs = () => {
     setGroups([]);
@@ -57,6 +62,7 @@ export default function App() {
       };
       return groupData;
     });
+    setNewGroups(newGroups);
     setGroups((prevGroups) => [...prevGroups, ...newGroups]);
   };
 
@@ -64,6 +70,11 @@ export default function App() {
     setIsTimerRunning(false); // Stop any existing timer
     generateGroups(); // Generate new groups
     setIsTimerRunning(true); // Start the timer
+  };
+
+  const handleStopNetworking = () => {
+    setIsTimerRunning(false);
+    setTimer(constantTimer);
   };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500 p-6">
@@ -73,7 +84,11 @@ export default function App() {
       {/* Main Card */}
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 space-y-12">
         {/* Timer Section */}
-
+        <Countdown
+          isTimerRunning={isTimerRunning}
+          initialTimer={timer}
+          constantTimer={constantTimer}
+        />
         {/* Input Section */}
 
         <InputSelection
@@ -88,23 +103,27 @@ export default function App() {
           setGroupSize={setGroupSize}
           timerInput={timer}
           setTimerInput={setTimer}
+          setConstantTimer={setConstantTimer}
         />
         {/* Start Networking Button Section */}
         <div className="mt-12 text-center">
-          <button
-            className="bg-gradient-to-r from-green-400 to-teal-500 text-white px-12 py-4 rounded-full text-lg font-bold shadow-lg hover:scale-105 transform transition"
-            onClick={handleStartNetworking}
-          >
-            Start Networking
-          </button>
+          <NetworkingControls
+            isTimerRunning={isTimerRunning}
+            handleStartNetworking={handleStartNetworking}
+            handleShuffleGroups={generateGroups}
+            handleStopNetworking={handleStopNetworking}
+          />
         </div>
-        <Countdown
-          isTimerRunning={isTimerRunning}
-          initialTimer="01:30"
-          constantTimer="01:30"
-        />
+
+        {/* Groups Display Section */}
+        {groups.length > 0 ? <GroupsDisplay groups={newGroups} /> : null}
+
         {/* Action Buttons Section */}
-        <LogsControls clearLogs={clearLogs} showLogsHandler={showLogsHandler} />
+        <LogsControls
+          clearLogs={clearLogs}
+          showLogsHandler={showLogsHandler}
+          showLogs={showLogs}
+        />
         {/* Show log section */}
         {showLogs && <Log logEntries={groups} />}
       </div>
