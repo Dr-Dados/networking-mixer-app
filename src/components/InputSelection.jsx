@@ -12,7 +12,7 @@ const InputSection = ({ setProfessionals, setStudents }) => (
       <Textarea
         label={"Add Students"}
         placeHolder={"Enter student names, one per line..."}
-        buttonText={"Add to List"}
+        buttonText={"Add Students"}
         onClickHandler={setStudents}
       />
     </div>
