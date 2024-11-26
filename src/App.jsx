@@ -12,6 +12,7 @@ import Log from "./components/Log";
 import LogsControls from "./components/LogsControls";
 import NetworkingControls from "./components/NetworkingControls";
 import GroupsDisplay from "./components/GroupsDisplay";
+import Signature from "./components/Signature";
 
 export default function App() {
   const [groupSize, setGroupSize] = useState(5);
@@ -24,7 +25,6 @@ export default function App() {
   const [groups, setGroups] = useState([]);
   const [newGroups, setNewGroups] = useState([]);
   const [showLogs, setShowLogs] = useState(false);
-  console.log(constantTimer, timer);
 
   const clearLogs = () => {
     setGroups([]);
@@ -125,7 +125,8 @@ export default function App() {
           showLogs={showLogs}
         />
         {/* Show log section */}
-        {showLogs && <Log logEntries={groups} />}
+        {showLogs && <Log logEntries={groups} timer={constantTimer} />}
+        <Signature />
       </div>
     </div>
   );
