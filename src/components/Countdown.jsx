@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 
-const Countdown = ({ initialTimer, constantTimer, isTimerRunning }) => {
+const Countdown = ({
+  initialTimer,
+  constantTimer,
+  isTimerRunning,
+  resetTimer,
+}) => {
   const [timer, setTimer] = useState(initialTimer);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -41,9 +46,15 @@ const Countdown = ({ initialTimer, constantTimer, isTimerRunning }) => {
     setTimer(initialTimer);
   }, [initialTimer]);
 
+  // Reset timer when resetTimer prop changes
+  useEffect(() => {
+    setTimer(initialTimer);
+    setIsPaused(false); // Resume timer automatically after reset
+  }, [resetTimer]);
+
   // Handle Reset
   const handleReset = () => {
-    setTimer(initialTimer);
+    setTimer(constantTimer);
     setIsPaused(true); // Automatically pause when reset
   };
 
@@ -53,8 +64,8 @@ const Countdown = ({ initialTimer, constantTimer, isTimerRunning }) => {
   };
 
   return (
-    <div className="text-center space-y-6">
-      <div className="inline-block bg-gradient-to-r from-red-500 to-orange-400 text-white text-3xl font-bold rounded-full px-8 py-4 shadow-lg">
+    <div className="space-y-6 text-center">
+      <div className="inline-block px-8 py-4 text-3xl font-bold text-white rounded-full shadow-lg bg-gradient-to-r from-red-500 to-orange-400">
         Next Group Change In: {timer}
       </div>
       <p className="text-sm text-gray-500">
@@ -63,13 +74,13 @@ const Countdown = ({ initialTimer, constantTimer, isTimerRunning }) => {
       <div className="space-x-4">
         <button
           onClick={togglePause}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transition duration-200"
+          className="px-6 py-2 font-semibold text-white transition duration-200 bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600"
         >
           {isPaused ? "Resume Timer" : "Pause Timer"}
         </button>
         <button
           onClick={handleReset}
-          className="bg-gray-700 hover:bg-gray-800 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transition duration-200"
+          className="px-6 py-2 font-semibold text-white transition duration-200 bg-gray-700 rounded-lg shadow-lg hover:bg-gray-800"
         >
           Reset Timer
         </button>

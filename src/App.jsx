@@ -3,11 +3,7 @@ import Header from "./components/Header";
 import Countdown from "./components/Countdown";
 import InputSelection from "./components/InputSelection";
 import Controls from "./components/Controls";
-import {
-  divideArray,
-  generateArrayWithRole,
-  shuffleArray,
-} from "./helpers/helpers";
+import { generateArrayWithRole, shuffleArray } from "./helpers/helpers";
 import Log from "./components/Log";
 import LogsControls from "./components/LogsControls";
 import NetworkingControls from "./components/NetworkingControls";
@@ -25,6 +21,7 @@ export default function App() {
   const [groups, setGroups] = useState([]);
   const [newGroups, setNewGroups] = useState([]);
   const [showLogs, setShowLogs] = useState(false);
+  const [resetTimerFlag, setResetTimerFlag] = useState(false);
 
   const clearLogs = () => {
     setGroups([]);
@@ -39,6 +36,10 @@ export default function App() {
       console.error("Invalid group size:", groupSize);
       return;
     }
+    if (typeof maxStudents !== "number" || maxStudents <= 0) {
+      console.error("Invalid max students per group:", maxStudents);
+      return;
+    }
 
     const prosArray = generateArrayWithRole(professionals, "professional");
     const studentsArray = generateArrayWithRole(students, "student");
@@ -50,18 +51,39 @@ export default function App() {
       return;
     }
 
-    console.log("allParticipants", allParticipants);
-    console.log("groupSize", groupSize);
+    const dividedGroups = [];
+    let currentGroup = [];
+    let studentCount = 0;
 
-    const dividedGroups = divideArray(allParticipants, groupSize);
-    const newGroups = dividedGroups.map((group, index) => {
-      const groupData = {
-        id: "Group" + (index + 1),
-        members: group,
-        time: new Date().toLocaleTimeString(),
-      };
-      return groupData;
-    });
+    for (const participant of allParticipants) {
+      // Check if adding the participant exceeds group constraints
+      if (
+        currentGroup.length < groupSize &&
+        (participant.role !== "student" || studentCount < maxStudents)
+      ) {
+        currentGroup.push(participant);
+        if (participant.role === "student") {
+          studentCount++;
+        }
+      } else {
+        // Save the current group and reset counters
+        dividedGroups.push(currentGroup);
+        currentGroup = [participant];
+        studentCount = participant.role === "student" ? 1 : 0;
+      }
+    }
+
+    // Add the last group if it's not empty
+    if (currentGroup.length > 0) {
+      dividedGroups.push(currentGroup);
+    }
+
+    const newGroups = dividedGroups.map((group, index) => ({
+      id: "Group " + (index + 1),
+      members: group,
+      time: new Date().toLocaleTimeString(),
+    }));
+
     setNewGroups(newGroups);
     setGroups((prevGroups) => [...prevGroups, ...newGroups]);
   };
@@ -72,22 +94,28 @@ export default function App() {
     setIsTimerRunning(true); // Start the timer
   };
 
+  const handleShuffleGroups = () => {
+    generateGroups(); // Shuffle the groups
+    setResetTimerFlag((prev) => !prev); // Toggle resetTimerFlag to trigger a timer reset
+  };
+
   const handleStopNetworking = () => {
     setIsTimerRunning(false);
-    setTimer(constantTimer);
+    setResetTimerFlag((prev) => !prev); // Toggle resetTimerFlag to trigger a timer reset
   };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500 p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500">
       {/* App Header */}
 
       <Header />
       {/* Main Card */}
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 space-y-12">
+      <div className="w-full max-w-4xl p-8 space-y-12 bg-white shadow-2xl rounded-2xl">
         {/* Timer Section */}
         <Countdown
           isTimerRunning={isTimerRunning}
           initialTimer={timer}
           constantTimer={constantTimer}
+          resetTimer={resetTimerFlag}
         />
         {/* Input Section */}
 
@@ -98,7 +126,7 @@ export default function App() {
         {/* Settings Section */}
         <Controls
           maxStudentsPerGroup={maxStudents}
-          setMaxStudents={setMaxStudents}
+          setMaxStudentsPerGroup={setMaxStudents}
           groupSize={groupSize}
           setGroupSize={setGroupSize}
           timerInput={timer}
@@ -110,7 +138,7 @@ export default function App() {
           <NetworkingControls
             isTimerRunning={isTimerRunning}
             handleStartNetworking={handleStartNetworking}
-            handleShuffleGroups={generateGroups}
+            handleShuffleGroups={handleShuffleGroups}
             handleStopNetworking={handleStopNetworking}
           />
         </div>
