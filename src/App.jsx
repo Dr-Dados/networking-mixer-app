@@ -98,6 +98,7 @@ export default function App() {
   };
 
   const handleShuffleGroups = () => {
+    toast.success("Groups shuffled successfully");
     generateGroups(); // Shuffle the groups
     setResetTimerFlag((prev) => !prev); // Toggle resetTimerFlag to trigger a timer reset
   };
@@ -105,6 +106,7 @@ export default function App() {
   const handleStopNetworking = () => {
     setIsTimerRunning(false);
     setResetTimerFlag((prev) => !prev); // Toggle resetTimerFlag to trigger a timer reset
+    toast.success("Networking stopped successfully");
   };
   return (
     <>
