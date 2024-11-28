@@ -9,6 +9,7 @@ import LogsControls from "./components/LogsControls";
 import NetworkingControls from "./components/NetworkingControls";
 import GroupsDisplay from "./components/GroupsDisplay";
 import Signature from "./components/Signature";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 export default function App() {
   const [groupSize, setGroupSize] = useState(5);
@@ -104,58 +105,62 @@ export default function App() {
     setResetTimerFlag((prev) => !prev); // Toggle resetTimerFlag to trigger a timer reset
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500">
-      {/* App Header */}
+    <>
+      <SpeedInsights />
 
-      <Header />
-      {/* Main Card */}
-      <div className="w-full max-w-4xl p-8 space-y-12 bg-white shadow-2xl rounded-2xl">
-        {/* Timer Section */}
-        <Countdown
-          isTimerRunning={isTimerRunning}
-          initialTimer={timer}
-          constantTimer={constantTimer}
-          resetTimer={resetTimerFlag}
-        />
-        {/* Input Section */}
+      <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500">
+        {/* App Header */}
 
-        <InputSelection
-          setProfessionals={setProfessionals}
-          setStudents={setStudents}
-        />
-        {/* Settings Section */}
-        <Controls
-          maxStudentsPerGroup={maxStudents}
-          setMaxStudentsPerGroup={setMaxStudents}
-          groupSize={groupSize}
-          setGroupSize={setGroupSize}
-          timerInput={timer}
-          setTimerInput={setTimer}
-          setConstantTimer={setConstantTimer}
-        />
-        {/* Start Networking Button Section */}
-        <div className="mt-12 text-center">
-          <NetworkingControls
+        <Header />
+        {/* Main Card */}
+        <div className="w-full max-w-4xl p-8 space-y-12 bg-white shadow-2xl rounded-2xl">
+          {/* Timer Section */}
+          <Countdown
             isTimerRunning={isTimerRunning}
-            handleStartNetworking={handleStartNetworking}
-            handleShuffleGroups={handleShuffleGroups}
-            handleStopNetworking={handleStopNetworking}
+            initialTimer={timer}
+            constantTimer={constantTimer}
+            resetTimer={resetTimerFlag}
           />
+          {/* Input Section */}
+
+          <InputSelection
+            setProfessionals={setProfessionals}
+            setStudents={setStudents}
+          />
+          {/* Settings Section */}
+          <Controls
+            maxStudentsPerGroup={maxStudents}
+            setMaxStudentsPerGroup={setMaxStudents}
+            groupSize={groupSize}
+            setGroupSize={setGroupSize}
+            timerInput={timer}
+            setTimerInput={setTimer}
+            setConstantTimer={setConstantTimer}
+          />
+          {/* Start Networking Button Section */}
+          <div className="mt-12 text-center">
+            <NetworkingControls
+              isTimerRunning={isTimerRunning}
+              handleStartNetworking={handleStartNetworking}
+              handleShuffleGroups={handleShuffleGroups}
+              handleStopNetworking={handleStopNetworking}
+            />
+          </div>
+
+          {/* Groups Display Section */}
+          {groups.length > 0 ? <GroupsDisplay groups={newGroups} /> : null}
+
+          {/* Action Buttons Section */}
+          <LogsControls
+            clearLogs={clearLogs}
+            showLogsHandler={showLogsHandler}
+            showLogs={showLogs}
+          />
+          {/* Show log section */}
+          {showLogs && <Log logEntries={groups} timer={constantTimer} />}
+          <Signature />
         </div>
-
-        {/* Groups Display Section */}
-        {groups.length > 0 ? <GroupsDisplay groups={newGroups} /> : null}
-
-        {/* Action Buttons Section */}
-        <LogsControls
-          clearLogs={clearLogs}
-          showLogsHandler={showLogsHandler}
-          showLogs={showLogs}
-        />
-        {/* Show log section */}
-        {showLogs && <Log logEntries={groups} timer={constantTimer} />}
-        <Signature />
       </div>
-    </div>
+    </>
   );
 }
