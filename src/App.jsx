@@ -10,6 +10,7 @@ import NetworkingControls from "./components/NetworkingControls";
 import GroupsDisplay from "./components/GroupsDisplay";
 import Signature from "./components/Signature";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function App() {
   const [groupSize, setGroupSize] = useState(5);
@@ -90,6 +91,7 @@ export default function App() {
   };
 
   const handleStartNetworking = () => {
+    toast.success("Networking started successfully");
     setIsTimerRunning(false); // Stop any existing timer
     generateGroups(); // Generate new groups
     setIsTimerRunning(true); // Start the timer
@@ -107,6 +109,7 @@ export default function App() {
   return (
     <>
       <SpeedInsights />
+      <Toaster />
 
       <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500">
         {/* App Header */}
@@ -126,6 +129,7 @@ export default function App() {
           <InputSelection
             setProfessionals={setProfessionals}
             setStudents={setStudents}
+            isActive={isTimerRunning}
           />
           {/* Settings Section */}
           <Controls
@@ -136,6 +140,7 @@ export default function App() {
             timerInput={timer}
             setTimerInput={setTimer}
             setConstantTimer={setConstantTimer}
+            isActive={isTimerRunning}
           />
           {/* Start Networking Button Section */}
           <div className="mt-12 text-center">

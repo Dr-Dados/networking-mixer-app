@@ -1,6 +1,13 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 
-const Textarea = ({ label, placeHolder, onClickHandler, buttonText }) => {
+const Textarea = ({
+  label,
+  placeHolder,
+  onClickHandler,
+  buttonText,
+  isActive,
+}) => {
   const [textValue, setTextValue] = useState("");
 
   const handleChange = (e) => {
@@ -8,22 +15,27 @@ const Textarea = ({ label, placeHolder, onClickHandler, buttonText }) => {
   };
 
   const handleClick = () => {
-    onClickHandler(textValue.split("\n").filter((name) => name.trim())); // Pass the current textarea value to the handler
+    if (textValue.length === 0) {
+      toast.error("Please enter a valid name");
+      return;
+    } // Pass
+    toast.success(`${buttonText} successfully!`);
+    onClickHandler(textValue.split("\n").filter((name) => name.trim()));
   };
 
   return (
-    <div className="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
-        {label}
-      </h2>
+    <div className="p-6 transition shadow-md bg-gray-50 rounded-xl hover:shadow-lg">
+      <h2 className="mb-4 text-lg font-semibold text-gray-800">{label}</h2>
       <textarea
         placeholder={placeHolder}
         className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none"
         onChange={handleChange}
+        disabled={isActive}
       ></textarea>
       <button
-        className="mt-4 w-full bg-purple-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-purple-600 transition"
+        className="w-full px-4 py-2 mt-4 text-white transition bg-purple-500 rounded-lg shadow-md hover:bg-purple-600"
         onClick={handleClick}
+        disabled={isActive}
       >
         {buttonText}
       </button>
