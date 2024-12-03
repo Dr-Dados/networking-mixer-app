@@ -46,8 +46,12 @@ export default function App() {
       return;
     }
 
-    const prosArray = generateArrayWithRole(professionals, "professional");
-    const studentsArray = generateArrayWithRole(students, "student");
+    const prosArray = shuffleArray(
+      generateArrayWithRole(professionals, "professional")
+    );
+    const studentsArray = shuffleArray(
+      generateArrayWithRole(students, "student")
+    );
 
     const groups = [];
     let currentGroup = [];
