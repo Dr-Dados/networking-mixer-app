@@ -184,7 +184,7 @@ export default function App() {
           </div>
 
           {/* Groups Display Section */}
-          {groups.length > 0 ? <GroupsDisplay groups={groups} /> : null}
+          {groups.length > 0 ? <GroupsDisplay groups={newGroups} /> : null}
 
           {/* Action Buttons Section */}
           <LogsControls
