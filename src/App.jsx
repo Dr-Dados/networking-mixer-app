@@ -11,6 +11,7 @@ import GroupsDisplay from "./components/GroupsDisplay";
 import Signature from "./components/Signature";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import toast, { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function App() {
   const [groupSize, setGroupSize] = useState(5);
@@ -24,6 +25,7 @@ export default function App() {
   const [newGroups, setNewGroups] = useState([]);
   const [showLogs, setShowLogs] = useState(false);
   const [resetTimerFlag, setResetTimerFlag] = useState(false);
+  console.log("test");
 
   const clearLogs = () => {
     setGroups([]);
@@ -139,6 +141,7 @@ export default function App() {
   };
   return (
     <>
+      <Analytics />
       <SpeedInsights />
       <Toaster />
 
