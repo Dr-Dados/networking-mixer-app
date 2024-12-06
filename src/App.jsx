@@ -12,6 +12,7 @@ import Signature from "./components/Signature";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import toast, { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
+import SuggestGroupPhrase from "./components/SuggestGroupPhrase";
 
 export default function App() {
   const [groupSize, setGroupSize] = useState(5);
@@ -25,24 +26,15 @@ export default function App() {
   const [newGroups, setNewGroups] = useState([]);
   const [showLogs, setShowLogs] = useState(false);
   const [resetTimerFlag, setResetTimerFlag] = useState(false);
-  console.log("test");
 
   const clearLogs = () => {
     setGroups([]);
-    alert("Logs cleared successfully");
-  };
-
-  const showLogsHandler = () => {
-    setShowLogs(!showLogs);
+    toast.success("Logs cleared successfully");
   };
 
   const generateGroups = () => {
-    if (typeof groupSize !== "number" || groupSize <= 0) {
-      console.error("Invalid group size:", groupSize);
-      return;
-    }
-    if (typeof maxStudents !== "number" || maxStudents <= 0) {
-      console.error("Invalid max students per group:", maxStudents);
+    if (students.length === 0 || professionals.length === 0) {
+      toast.error("Please add both students and professionals.");
       return;
     }
 
@@ -52,7 +44,6 @@ export default function App() {
     const studentsArray = shuffleArray(
       generateArrayWithRole(students, "student")
     );
-
     const groups = [];
     let currentGroup = [];
     let studentCount = 0;
@@ -60,89 +51,91 @@ export default function App() {
     const studentsCopy = [...studentsArray];
     const professionalsCopy = [...prosArray];
 
-    // Loop until both arrays are empty
+    console.log("Initial Students:", studentsCopy);
+    console.log("Initial Professionals:", professionalsCopy);
+
     while (studentsCopy.length > 0 || professionalsCopy.length > 0) {
-      // Add students to the group up to maxStudents
+      // Add students up to the max allowed in the group
       while (
         studentsCopy.length > 0 &&
         studentCount < maxStudents &&
         currentGroup.length < groupSize
       ) {
-        currentGroup.push(studentsCopy.shift()); // Remove the first student and add to group
-        studentCount++;
+        const student = studentsCopy.shift();
+        console.log("student", student);
+        if (student) {
+          currentGroup.push(student);
+          studentCount++;
+        }
       }
 
-      // Add professionals to fill the group
+      // Add professionals to fill the remaining slots
       while (professionalsCopy.length > 0 && currentGroup.length < groupSize) {
-        currentGroup.push(professionalsCopy.shift()); // Remove the first professional and add to group
+        const professional = professionalsCopy.shift();
+        console.log("professional", professional);
+        if (professional) {
+          currentGroup.push(professional);
+        }
       }
 
-      // If the group is full, finalize it
+      // If no professionals are left but students remain, fill the group with students
+      while (
+        studentsCopy.length > 0 &&
+        professionalsCopy.length === 0 &&
+        currentGroup.length < groupSize
+      ) {
+        const student = studentsCopy.shift();
+        if (student) {
+          currentGroup.push(student);
+          studentCount++;
+        }
+      }
+
+      // Finalize the current group if it's full or no more members are available
       if (
         currentGroup.length === groupSize ||
         (studentsCopy.length === 0 && professionalsCopy.length === 0)
       ) {
-        groups.push(shuffleArray(currentGroup));
+        groups.push([...currentGroup]); // Use a copy of the array
         currentGroup = [];
         studentCount = 0; // Reset student count for the next group
       }
+      console.log(groups, studentsCopy.length, professionalsCopy.length);
     }
-    // // Map groups to the desired structure
+
     const newGroups = groups.map((group, index) => ({
       id: `Group ${index + 1}`,
       members: group,
       time: new Date().toLocaleTimeString(),
     }));
-    // // Update the state with the generated groups
-    console.log(newGroups);
+
+    console.log("Generated Groups:", newGroups);
+
+    // Update state with the generated groups
     setNewGroups(newGroups);
     setGroups((prevGroups) => [...prevGroups, ...newGroups]);
-    // // Process participants to form groups
-    // while (prosArray.length > 0 || studentsArray.length > 0) {
-    //   // Add students up to maxStudents
-    //   addParticipantsToGroup(studentsArray, "student", maxStudents);
-    //   // Fill remaining slots with professionals
-    //   addParticipantsToGroup(prosArray, "professional");
-
-    //   // If the group is full, finalize it
-    //   if (currentGroup.length === groupSize) {
-    //     dividedGroups.push(currentGroup);
-    //     currentGroup = [];
-    //     studentCount = 0; // Reset student count for the next group
-    //   }
-    // }
-
-    // // Add any remaining participants to a group (even if constraints are not satisfied)
-    // if (currentGroup.length > 0) {
-    //   dividedGroups.push(shuffleArray(currentGroup));
-    // }
-
-    // // Map groups to the desired structure
-    // const newGroups = dividedGroups.map((group, index) => ({
-    //   id: `Group ${index + 1}`,
-    //   members: group,
-    //   time: new Date().toLocaleTimeString(),
-    // }));
   };
 
   const handleStartNetworking = () => {
     toast.success("Networking started successfully");
-    setIsTimerRunning(false); // Stop any existing timer
-    generateGroups(); // Generate new groups
-    setIsTimerRunning(true); // Start the timer
+    setIsTimerRunning(false);
+    generateGroups();
+    setIsTimerRunning(true);
   };
 
   const handleShuffleGroups = () => {
     toast.success("Groups shuffled successfully");
-    generateGroups(); // Shuffle the groups
-    setResetTimerFlag((prev) => !prev); // Toggle resetTimerFlag to trigger a timer reset
+    generateGroups();
+    setResetTimerFlag((prev) => !prev);
+    setTimer(constantTimer);
   };
 
   const handleStopNetworking = () => {
     setIsTimerRunning(false);
-    setResetTimerFlag((prev) => !prev); // Toggle resetTimerFlag to trigger a timer reset
+    setResetTimerFlag((prev) => !prev);
     toast.success("Networking stopped successfully");
   };
+
   return (
     <>
       <Analytics />
@@ -150,26 +143,20 @@ export default function App() {
       <Toaster />
 
       <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500">
-        {/* App Header */}
-
         <Header />
-        {/* Main Card */}
         <div className="w-full max-w-4xl p-8 space-y-12 bg-white shadow-2xl rounded-2xl">
-          {/* Timer Section */}
           <Countdown
             isTimerRunning={isTimerRunning}
             initialTimer={timer}
             constantTimer={constantTimer}
             resetTimer={resetTimerFlag}
           />
-          {/* Input Section */}
-
           <InputSelection
             setProfessionals={setProfessionals}
             setStudents={setStudents}
             isActive={isTimerRunning}
           />
-          {/* Settings Section */}
+
           <Controls
             maxStudentsPerGroup={maxStudents}
             setMaxStudentsPerGroup={setMaxStudents}
@@ -180,7 +167,6 @@ export default function App() {
             setConstantTimer={setConstantTimer}
             isActive={isTimerRunning}
           />
-          {/* Start Networking Button Section */}
           <div className="mt-12 text-center">
             <NetworkingControls
               isTimerRunning={isTimerRunning}
@@ -189,17 +175,12 @@ export default function App() {
               handleStopNetworking={handleStopNetworking}
             />
           </div>
-
-          {/* Groups Display Section */}
           {groups.length > 0 ? <GroupsDisplay groups={newGroups} /> : null}
-
-          {/* Action Buttons Section */}
           <LogsControls
             clearLogs={clearLogs}
-            showLogsHandler={showLogsHandler}
+            showLogsHandler={() => setShowLogs(!showLogs)}
             showLogs={showLogs}
           />
-          {/* Show log section */}
           {showLogs && <Log logEntries={groups} timer={constantTimer} />}
           <Signature />
         </div>

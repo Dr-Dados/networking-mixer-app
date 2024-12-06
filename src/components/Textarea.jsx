@@ -9,9 +9,11 @@ const Textarea = ({
   isActive,
 }) => {
   const [textValue, setTextValue] = useState("");
+  const [number, setNumber] = useState(0);
 
   const handleChange = (e) => {
-    setTextValue(e.target.value); // Update the state when the textarea value changes
+    setTextValue(e.target.value);
+    setNumber(e.target.value.split("\n").filter((name) => name.trim()).length); // Update the state when the textarea value changes
   };
 
   const handleClick = () => {
@@ -25,7 +27,9 @@ const Textarea = ({
 
   return (
     <div className="p-6 transition shadow-md bg-gray-50 rounded-xl hover:shadow-lg">
-      <h2 className="mb-4 text-lg font-semibold text-gray-800">{label}</h2>
+      <h2 className="mb-4 text-lg font-semibold text-gray-800">
+        {label}: {number}
+      </h2>
       <textarea
         placeholder={placeHolder}
         className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none"

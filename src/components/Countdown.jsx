@@ -9,13 +9,11 @@ const Countdown = ({
   const [timer, setTimer] = useState(initialTimer);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Convert mm:ss to total seconds
   const convertToSeconds = (timeString) => {
     const [minutes, seconds] = timeString.split(":").map(Number);
     return minutes * 60 + seconds;
   };
 
-  // Convert total seconds back to mm:ss format
   const convertToMMSS = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -32,33 +30,29 @@ const Countdown = ({
       if (isTimerRunning && !isPaused) {
         totalSeconds -= 1;
         if (totalSeconds <= 0) {
-          totalSeconds = convertToSeconds(constantTimer); // Reset when timer reaches 0
+          totalSeconds = convertToSeconds(constantTimer);
         }
         setTimer(convertToMMSS(totalSeconds));
       }
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [constantTimer, isPaused, isTimerRunning, timer]);
+    return () => clearInterval(interval);
+  }, [constantTimer, isPaused, isTimerRunning]);
 
-  // Sync with external initialTimer changes
   useEffect(() => {
     setTimer(initialTimer);
   }, [initialTimer]);
 
-  // Reset timer when resetTimer prop changes
   useEffect(() => {
     setTimer(initialTimer);
-    setIsPaused(false); // Resume timer automatically after reset
+    setIsPaused(false);
   }, [resetTimer]);
 
-  // Handle Reset
   const handleReset = () => {
     setTimer(constantTimer);
-    setIsPaused(true); // Automatically pause when reset
+    setIsPaused(true);
   };
 
-  // Toggle Pause/Resume
   const togglePause = () => {
     setIsPaused(!isPaused);
   };
