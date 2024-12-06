@@ -37,7 +37,7 @@ const Countdown = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [constantTimer, isPaused, isTimerRunning]);
+  }, [constantTimer, isPaused, isTimerRunning, timer]);
 
   useEffect(() => {
     setTimer(initialTimer);

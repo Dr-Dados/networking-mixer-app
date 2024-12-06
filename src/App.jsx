@@ -116,6 +116,10 @@ export default function App() {
   };
 
   const handleStartNetworking = () => {
+    if (professionals.length === 0 && students.length === 0) {
+      toast.error("Please add both students and professionals.");
+      return;
+    }
     toast.success("Networking started successfully");
     setIsTimerRunning(false);
     generateGroups();
