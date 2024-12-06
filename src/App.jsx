@@ -156,7 +156,11 @@ export default function App() {
             setStudents={setStudents}
             isActive={isTimerRunning}
           />
-
+          <SuggestGroupPhrase
+            professionals={professionals}
+            students={students}
+            groupSize={groupSize}
+          />
           <Controls
             maxStudentsPerGroup={maxStudents}
             setMaxStudentsPerGroup={setMaxStudents}
