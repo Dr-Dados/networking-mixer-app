@@ -12,7 +12,6 @@ import Signature from "./components/Signature";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import toast, { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
-import SuggestGroupPhrase from "./components/SuggestGroupPhrase";
 
 export default function App() {
   const [groupSize, setGroupSize] = useState(5);
@@ -156,11 +155,7 @@ export default function App() {
             setStudents={setStudents}
             isActive={isTimerRunning}
           />
-          <SuggestGroupPhrase
-            professionals={professionals}
-            students={students}
-            groupSize={groupSize}
-          />
+
           <Controls
             maxStudentsPerGroup={maxStudents}
             setMaxStudentsPerGroup={setMaxStudents}
