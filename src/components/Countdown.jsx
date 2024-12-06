@@ -65,20 +65,22 @@ const Countdown = ({
       <p className="text-sm text-gray-500">
         Groups will automatically refresh every {constantTimer}.
       </p>
-      <div className="space-x-4">
-        <button
-          onClick={togglePause}
-          className="px-6 py-2 font-semibold text-white transition duration-200 bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600"
-        >
-          {isPaused ? "Resume Timer" : "Pause Timer"}
-        </button>
-        <button
-          onClick={handleReset}
-          className="px-6 py-2 font-semibold text-white transition duration-200 bg-gray-700 rounded-lg shadow-lg hover:bg-gray-800"
-        >
-          Reset Timer
-        </button>
-      </div>
+      {isTimerRunning && (
+        <div className="space-x-4">
+          <button
+            onClick={togglePause}
+            className="px-6 py-2 font-semibold text-white transition duration-200 bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600"
+          >
+            {isPaused ? "Resume Timer" : "Pause Timer"}
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-6 py-2 font-semibold text-white transition duration-200 bg-gray-700 rounded-lg shadow-lg hover:bg-gray-800"
+          >
+            Reset Timer
+          </button>
+        </div>
+      )}
     </div>
   );
 };
