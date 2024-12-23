@@ -8,7 +8,8 @@ const NetworkingControls = ({
     <div className="flex justify-center space-x-4">
       {!isTimerRunning ? (
         <button
-          className="bg-gradient-to-r from-green-400 to-teal-500 text-white px-12 py-4 rounded-full text-lg font-bold shadow-lg hover:scale-105 transform transition"
+          id="startNetworking"
+          className="px-12 py-4 text-lg font-bold text-white transition transform rounded-full shadow-lg bg-gradient-to-r from-green-400 to-teal-500 hover:scale-105"
           onClick={handleStartNetworking}
         >
           Start Networking
@@ -16,13 +17,14 @@ const NetworkingControls = ({
       ) : (
         <>
           <button
-            className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition transform hover:scale-105"
+            id="stopNetworking"
+            className="px-8 py-3 text-lg font-bold text-white transition transform bg-red-500 rounded-full shadow-lg hover:bg-red-600 hover:scale-105"
             onClick={handleStopNetworking}
           >
             Stop Networking
           </button>
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition transform hover:scale-105"
+            className="px-8 py-3 text-lg font-bold text-white transition transform bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 hover:scale-105"
             onClick={handleShuffleGroups}
           >
             Shuffle Groups
